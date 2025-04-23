@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:auth_buttons/auth_buttons.dart';
+import 'register.dart';
+import 'dashboard.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -11,12 +13,10 @@ class _LoginPageState extends State<LoginPage> {
 
   bool isLoading = false;
 
-  // AuthButtonType buttonType = AuthButtonType.icon;
-  // AuthIconType iconType = AuthIconType.outlined;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -25,7 +25,7 @@ class _LoginPageState extends State<LoginPage> {
               'Login here',
               style: TextStyle(
                 fontSize: 36,
-                color: Colors.purple,
+                color: Color(0xFF6100ED),
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -46,9 +46,9 @@ class _LoginPageState extends State<LoginPage> {
                 decoration: InputDecoration(
                   labelText: 'Email',
                   filled: true,
-                  fillColor: Colors.purple.shade200,
+                  fillColor: Color(0xFFE5D3FF),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.purple, width: 2.0),
+                    borderSide: BorderSide(color: Color(0xFF6100ED), width: 1.0),
                     borderRadius: BorderRadius.circular(15.0),
                   ),
                 ),
@@ -63,9 +63,9 @@ class _LoginPageState extends State<LoginPage> {
                 decoration: InputDecoration(
                   labelText: 'Password',
                   filled: true,
-                  fillColor: Colors.purple.shade200,
+                  fillColor: Color(0xFFE5D3FF),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.purple, width: 2.0),
+                    borderSide: BorderSide(color: Color(0xFF6100ED), width: 1.0),
                     borderRadius: BorderRadius.circular(15.0),
                   ),
                 ),
@@ -83,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
                     'Forgot your password?',
                     style: TextStyle(
                       fontSize: 16,
-                      color: Colors.purple.shade800,
+                      color: Color(0xFF6100ED),
                     ),
                   ),
                 ],
@@ -99,9 +99,14 @@ class _LoginPageState extends State<LoginPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   TextButton(
-                    onPressed: null,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => DashboardPage()),
+                      );
+                    },
                     style: TextButton.styleFrom(
-                      backgroundColor: Colors.purple,
+                      backgroundColor: Color(0xFF6100ED),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -116,11 +121,19 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   SizedBox(height: 20),
-                  Text(
-                    'Create new account',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.black,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => RegisterPage()),
+                      );
+                    },
+                    child:  Text(
+                      'Create new account',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
                     ),
                   ),
                   SizedBox(height: 15),
@@ -128,7 +141,7 @@ class _LoginPageState extends State<LoginPage> {
                     'Or continue with',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: Colors.purple.shade800,
+                      color: Color(0xFF6100ED),
                     ),
                   ),
                   SizedBox(height: 15),

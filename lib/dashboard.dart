@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:auth_buttons/auth_buttons.dart';
+import 'package:table_calendar/table_calendar.dart';
 import 'dashboard.dart';
-import 'welcome.dart';
+import 'habit.dart';
 import 'profile.dart';
 
 class DashboardPage extends StatefulWidget {
@@ -24,7 +24,7 @@ class _DashboardPageState extends State<DashboardPage> {
               Navigator.push(context, MaterialPageRoute(builder: (context) => DashboardPage()));
               break;
             case 1:
-              Navigator.push(context, MaterialPageRoute(builder: (context) => WelcomePage()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => HabitPage()));
               break;
             case 2:
               Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage()));
@@ -71,114 +71,122 @@ class _DashboardPageState extends State<DashboardPage> {
                     height: 200,
                     width: 320,
                     decoration: BoxDecoration(
-                      color: Colors.black,
+                      color: Color(0xFF0E0D12),
                       border: Border.all(
                         width: 8,
                       ),
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    child: Column(
-                      children: [
-                        SizedBox(height: 16 ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Image.asset(
-                              'assets/heart-new.png',
-                              width: 40,
-                              height: 35,
-                              fit: BoxFit.fill,
-                            ),
-                            SizedBox(width: 1),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "You are healthy",
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ], // children
-                            ),
-                          ], // children
-                        ),
-                        SizedBox(height: 12),
-                        Container(
-                          margin: EdgeInsets.fromLTRB(8, 0, 8, 0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Padding(
+                      padding: EdgeInsets.all(12.0),
+                      child: Column(
+                        children: [
+                          SizedBox(height: 16),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Row(
+                              Image.asset(
+                                'assets/heart-new.png',
+                                width: 40,
+                                height: 35,
+                                fit: BoxFit.fill,
+                              ),
+                              SizedBox(width: 8),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    '95%',
+                                    "You are healthy",
                                     style: TextStyle(
-                                      fontSize: 32,
+                                      fontSize: 12,
                                       color: Colors.white,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  SizedBox(width: 8),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        height: 20,
-                                        width: 124,
-                                        alignment: Alignment.center,
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey,
-                                          border: Border.all(
-                                            color: Colors.grey,
-                                          ),
-                                          borderRadius: BorderRadius.circular(16),
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            SizedBox(width: 4),
-                                            Icon(
-                                              Icons.circle,
-                                              color: Colors.green,
-                                              size: 12.0,
-                                            ),
-                                            SizedBox(width: 4),
-                                            Text(
-                                              'Increased +10%',
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(height: 4),
-                                      Text(
-                                        'Keep it up, almost there just a little more',
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ],
-                                  )
                                 ],
                               ),
-                              SizedBox(height: 8),
-                              LinearProgressIndicator(
-                                value: 0.7,
-                                semanticsLabel: 'Achieved',
-                                minHeight: 20,
-                              ),
-                            ], // children
+                            ],
                           ),
-                        ),
-                        SizedBox(height: 8),
-                      ], // children
-                    ),
+                          SizedBox(height: 12),
+                          Container(
+                            margin: EdgeInsets.fromLTRB(8, 0, 8, 0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      '95%',
+                                      style: TextStyle(
+                                        fontSize: 32,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    SizedBox(width: 12),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          height: 20,
+                                          width: 124,
+                                          alignment: Alignment.center,
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey,
+                                            border: Border.all(
+                                              color: Colors.grey,
+                                            ),
+                                            borderRadius: BorderRadius.circular(16),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              SizedBox(width: 4),
+                                              Icon(
+                                                Icons.circle,
+                                                color: Colors.green,
+                                                size: 12.0,
+                                              ),
+                                              SizedBox(width: 4),
+                                              Text(
+                                                'Increased +10%',
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(height: 4),
+                                        Text(
+                                          'Keep it up, almost there just a little more',
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                                SizedBox(height: 12),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: LinearProgressIndicator(
+                                    value: 0.7,
+                                    semanticsLabel: 'Achieved',
+                                    minHeight: 20,
+                                    backgroundColor: Color(0xFFFFFFFF),
+                                    valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF6100ED)),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                        ],
+                      ),
+                    )
                   ),
                   SizedBox(height: 25),
                   Text(
@@ -198,10 +206,10 @@ class _DashboardPageState extends State<DashboardPage> {
                         height: 142,
                         width: 142,
                         decoration: BoxDecoration(
-                          color: Colors.grey,
+                          color: Color(0xFFD9D9D9),
                           border: Border.all(
                             width: 8,
-                            color: Colors.grey,
+                            color: Color(0xFFD9D9D9),
                           ),
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -274,10 +282,10 @@ class _DashboardPageState extends State<DashboardPage> {
                         height: 142,
                         width: 142,
                         decoration: BoxDecoration(
-                          color: Colors.grey,
+                          color: Color(0xFFD9D9D9),
                           border: Border.all(
                             width: 8,
-                            color: Colors.grey,
+                            color: Color(0xFFD9D9D9),
                           ),
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -343,13 +351,13 @@ class _DashboardPageState extends State<DashboardPage> {
                   ),
                   SizedBox(height: 20),
                   Container(
-                    height: 120,
+                    height: 140,
                     width: 310,
                     decoration: BoxDecoration(
-                      color: Colors.grey,
+                      color: Color(0xFFD9D9D9),
                       border: Border.all(
                         width: 8,
-                        color: Colors.grey,
+                        color: Color(0xFFD9D9D9),
                       ),
                       borderRadius: BorderRadius.circular(16),
                     ),
@@ -398,14 +406,20 @@ class _DashboardPageState extends State<DashboardPage> {
                             children: [
                               const Text('Achieved', style: TextStyle(fontSize: 12)),
                               SizedBox(height: 8),
-                              LinearProgressIndicator(
-                                value: 0.7,
-                                semanticsLabel: 'Achieved',
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: LinearProgressIndicator(
+                                  value: 0.7,
+                                  semanticsLabel: 'Achieved',
+                                  minHeight: 8,
+                                  backgroundColor: Color(0xFFFFFFFF),
+                                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF6100ED)),
+                                ),
                               ),
                             ], // children
                           ),
                         ),
-                        SizedBox(height: 8),
+                        SizedBox(height: 16),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
@@ -434,10 +448,10 @@ class _DashboardPageState extends State<DashboardPage> {
                         height: 142,
                         width: 142,
                         decoration: BoxDecoration(
-                          color: Colors.grey,
+                          color: Color(0xFFD9D9D9),
                           border: Border.all(
                             width: 8,
-                            color: Colors.grey,
+                            color: Color(0xFFD9D9D9),
                           ),
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -510,10 +524,10 @@ class _DashboardPageState extends State<DashboardPage> {
                         height: 142,
                         width: 142,
                         decoration: BoxDecoration(
-                          color: Colors.grey,
+                          color: Color(0xFFD9D9D9),
                           border: Border.all(
                             width: 8,
-                            color: Colors.grey,
+                            color: Color(0xFFD9D9D9),
                           ),
                           borderRadius: BorderRadius.circular(16),
                         ),

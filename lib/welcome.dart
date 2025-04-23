@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'login.dart';
+import 'register.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
@@ -28,7 +30,7 @@ class _WelcomePageState extends State<WelcomePage> {
               'Habbit Tracker',
               style: TextStyle(
                 fontSize: 24,
-                color: Colors.purple,
+                color: Color(0xFF6100ED),
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -50,9 +52,13 @@ class _WelcomePageState extends State<WelcomePage> {
                     setState(() {
                       _flag1 = !_flag1;
                     });
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginPage()), // 👈 replace with your page widget
+                    );
                   },
                   style: TextButton.styleFrom(
-                    backgroundColor: _flag1 ? Colors.purple : Colors.purple.shade400,
+                    backgroundColor: _flag1 ? Color(0xBF6100ED) : Color(0xFF6100ED),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -71,9 +77,13 @@ class _WelcomePageState extends State<WelcomePage> {
                     setState(() {
                       _flag2 = !_flag2;
                     });
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => RegisterPage()), // 👈 replace with your page widget
+                    );
                   },
                   style: TextButton.styleFrom(
-                    backgroundColor: _flag2 ? Colors.purple : Colors.purple.shade400,
+                    backgroundColor: _flag2 ? Colors.grey.shade200 : Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -82,7 +92,7 @@ class _WelcomePageState extends State<WelcomePage> {
                   child: Text(
                     'Register',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Colors.black,
                     ),
                   ),
                 ),

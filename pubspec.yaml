@@ -48,6 +48,7 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   auth_buttons: ^3.0.3
   table_calendar: ^3.2.0
+  flutter_colorpicker: ^1.1.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -66,6 +67,21 @@ flutter:
     - assets/goals-new.png
     - assets/sepatu-new.png
     - assets/heart-new.png
+    - assets/labib.jpg
+    - assets/Group 3.png
+    - assets/task.png
+    - assets/book.png
+    - assets/meditate.png
+    - assets/workout.png
+    - assets/water.png
+    - assets/burn.png
+    - assets/steps.png
+    - assets/bed.png
+    - assets/run.png
+    - assets/sunny.png
+    - assets/morning.png
+    - assets/night.png
+    - assets/allDay.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

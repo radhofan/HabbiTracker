@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:auth_buttons/auth_buttons.dart';
+import 'login.dart';
+import 'dashboard.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -17,6 +19,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -26,7 +29,7 @@ class _RegisterPageState extends State<RegisterPage> {
               'Create Account',
               style: TextStyle(
                 fontSize: 36,
-                color: Colors.purple,
+                color: Color(0xFF6100ED),
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -47,9 +50,9 @@ class _RegisterPageState extends State<RegisterPage> {
                 decoration: InputDecoration(
                   labelText: 'Email',
                   filled: true,
-                  fillColor: Colors.purple.shade200,
+                  fillColor: Color(0xFFE5D3FF),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.purple, width: 2.0),
+                    borderSide: BorderSide(color: Color(0xFF6100ED), width: 2.0),
                     borderRadius: BorderRadius.circular(15.0),
                   ),
                 ),
@@ -64,9 +67,9 @@ class _RegisterPageState extends State<RegisterPage> {
                 decoration: InputDecoration(
                   labelText: 'Password',
                   filled: true,
-                  fillColor: Colors.purple.shade200,
+                  fillColor: Color(0xFFE5D3FF),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.purple, width: 2.0),
+                    borderSide: BorderSide(color: Color(0xFF6100ED), width: 2.0),
                     borderRadius: BorderRadius.circular(15.0),
                   ),
                 ),
@@ -81,9 +84,9 @@ class _RegisterPageState extends State<RegisterPage> {
                 decoration: InputDecoration(
                   labelText: 'Confirm Password',
                   filled: true,
-                  fillColor: Colors.purple.shade200,
+                  fillColor: Color(0xFFE5D3FF),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.purple, width: 2.0),
+                    borderSide: BorderSide(color: Color(0xFF6100ED), width: 2.0),
                     borderRadius: BorderRadius.circular(15.0),
                   ),
                 ),
@@ -99,9 +102,14 @@ class _RegisterPageState extends State<RegisterPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   TextButton(
-                    onPressed: null,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => DashboardPage()),
+                      );
+                    },
                     style: TextButton.styleFrom(
-                      backgroundColor: Colors.purple,
+                      backgroundColor: Color(0xFF6100ED),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -116,11 +124,19 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
                   SizedBox(height: 20),
-                  Text(
-                    'Already Have an Account',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.black,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginPage()), // 👈 replace with your page widget
+                      );
+                    },
+                    child:  Text(
+                      'Already Have an Account',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
                     ),
                   ),
                   SizedBox(height: 15),
@@ -128,7 +144,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     'Or continue with',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: Colors.purple.shade800,
+                      color: Color(0xFF6100ED),
                     ),
                   ),
                   SizedBox(height: 15),
