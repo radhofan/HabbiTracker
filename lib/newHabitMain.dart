@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'habit.dart';
+import 'package:provider/provider.dart';
+import 'habitDetail.dart';
 
 class NewhabitMainPage extends StatefulWidget {
   const NewhabitMainPage({super.key});
@@ -19,7 +21,7 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
     });
   }
 
-  void showColorPickerDialog() {
+  void showColorPickerDialog(HabitDetailState habitDetailState) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -31,6 +33,7 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
               onColorChanged: (color) {
                 setState(() {
                   currentColor = color;
+                  habitDetailState.updateColor(color);
                 });
               },
               showLabel: true,
@@ -64,8 +67,8 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
     'assets/run.png',
   ];
 
-  void _showImagePicker() async {
-    final String? newImage = await showDialog<String>(
+  void _showImagePicker(HabitDetailState habitDetailState) {
+    showDialog<String>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -90,17 +93,21 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
           ),
         );
       },
-    );
-
-    if (newImage != null) {
-      setState(() {
-        selectedImage = newImage;
-      });
-    }
+    ).then((newImage) {
+      if (newImage != null) {
+        setState(() {
+          selectedImage = newImage;  // Update local state
+          habitDetailState.updateSelectedImage(newImage);  // Update global state
+        });
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+
+    final habitDetailState = Provider.of<HabitDetailState>(context);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Center(
@@ -145,14 +152,15 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
                       color: Colors.purple.shade100,
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: TextField(
-                      textAlign: TextAlign.start,
+                    child: TextFormField(
+                      initialValue: habitDetailState.habitName,
+                      onChanged: (value) => habitDetailState.updateHabitName(value),
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        hintText: '1 times',
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        hintText: 'Enter habit name',
                       ),
-                    ),
+                      textAlign: TextAlign.center,
+                    )
                   ),
                 ],
               ),
@@ -177,7 +185,7 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       GestureDetector(
-                        onTap: _showImagePicker, // Open the color picker on tap
+                        onTap: () => _showImagePicker(habitDetailState), // Open the color picker on tap
                         child: Container(
                           width: 150,
                           padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
@@ -205,7 +213,7 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
                                 child: Align(
                                   alignment: Alignment.center,
                                   child: Image.asset(
-                                    selectedImage,
+                                    habitDetailState.selectedImage,
                                     width: 24,
                                     height: 24,
                                     fit: BoxFit.cover,
@@ -226,12 +234,12 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
                       ),
                       SizedBox(height: 12),
                       GestureDetector(
-                        onTap: showColorPickerDialog, // Open the color picker on tap
+                        onTap: () => showColorPickerDialog(habitDetailState),
                         child: Container(
                           width: 150,
                           padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
                           decoration: BoxDecoration(
-                            color: Colors.purple.shade100, // Set the background color to currentColor
+                            color: Colors.purple.shade100,
                             borderRadius: BorderRadius.circular(12),
                             boxShadow: [
                               BoxShadow(
@@ -257,7 +265,7 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
                                     height: 20,
                                     width: 20,
                                     decoration: BoxDecoration(
-                                      color: currentColor,
+                                      color: habitDetailState.currentColor,
                                       borderRadius: BorderRadius.circular(36),
                                     ),
                                   ),
@@ -379,7 +387,7 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
                                     Padding(
                                       padding: EdgeInsets.only(right: 16), // 👈 just padding on the left
                                       child: Text(
-                                        'Set reminder',
+                                        'Every day',
                                         style: TextStyle(
                                           fontSize: 16,
                                           color: Colors.black,
@@ -418,14 +426,15 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
                             GestureDetector(
                               onTap: () {
                                 setState(() {
-                                  selectedContainer = 0; // Set selected container to 0
+                                  selectedContainer = 0;
+                                  habitDetailState.updateSelectedContainer(0);
                                 });
                               },
                               child: Container(
                                 width: 70,
                                 height: 70,
                                 decoration: BoxDecoration(
-                                  color: selectedContainer == 0
+                                  color: habitDetailState.selectedContainer == 0
                                       ? Colors.purple.shade800
                                       : Colors.purple.shade200,
                                   borderRadius: BorderRadius.circular(16),
@@ -448,14 +457,15 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
                             GestureDetector(
                               onTap: () {
                                 setState(() {
-                                  selectedContainer = 1; // Set selected container to 0
+                                  selectedContainer = 1;
+                                  habitDetailState.updateSelectedContainer(1);
                                 });
                               },
                               child: Container(
                                 width: 70,
                                 height: 70,
                                 decoration: BoxDecoration(
-                                  color: selectedContainer == 1
+                                  color: habitDetailState.selectedContainer == 1
                                       ? Colors.purple.shade800
                                       : Colors.purple.shade200,
                                   borderRadius: BorderRadius.circular(16),
@@ -478,14 +488,15 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
                             GestureDetector(
                               onTap: () {
                                 setState(() {
-                                  selectedContainer = 2; // Set selected container to 0
+                                  selectedContainer = 2;
+                                  habitDetailState.updateSelectedContainer(2);
                                 });
                               },
                               child: Container(
                                 width: 70,
                                 height: 70,
                                 decoration: BoxDecoration(
-                                  color: selectedContainer == 2
+                                  color: habitDetailState.selectedContainer == 2
                                       ? Colors.purple.shade800
                                       : Colors.purple.shade200,
                                   borderRadius: BorderRadius.circular(16),
@@ -508,14 +519,15 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
                             GestureDetector(
                               onTap: () {
                                 setState(() {
-                                  selectedContainer = 3; // Set selected container to 0
+                                  selectedContainer = 3;
+                                  habitDetailState.updateSelectedContainer(3);
                                 });
                               },
                               child: Container(
                                 width: 70,
                                 height: 70,
                                 decoration: BoxDecoration(
-                                  color: selectedContainer == 3
+                                  color: habitDetailState.selectedContainer == 3
                                       ? Colors.purple.shade800
                                       : Colors.purple.shade200,
                                   borderRadius: BorderRadius.circular(16),

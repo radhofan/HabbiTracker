@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'newHabitMain.dart';
 
+import 'package:provider/provider.dart';
+import 'habitDetail.dart';
+
+
 class NewhabitPage extends StatefulWidget {
   const NewhabitPage({super.key});
 
@@ -10,8 +14,6 @@ class NewhabitPage extends StatefulWidget {
 }
 
 class _NewhabitPageState extends State<NewhabitPage> {
-
-
 
   Color currentColor = Colors.blue;
 
@@ -47,8 +49,8 @@ class _NewhabitPageState extends State<NewhabitPage> {
     'assets/run.png',
   ];
 
-  void _showImagePicker() async {
-    final String? newImage = await showDialog<String>(
+  void _showImagePicker(HabitDetailState habitDetailState) {
+    showDialog<String>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -73,15 +75,16 @@ class _NewhabitPageState extends State<NewhabitPage> {
           ),
         );
       },
-    );
-
-    if (newImage != null) {
-      setState(() {
-        selectedImage = newImage;
-      });
-    }
+    ).then((newImage) {
+      if (newImage != null) {
+        setState(() {
+          selectedImage = newImage;  // Update local state
+          habitDetailState.updateSelectedImage(newImage);  // Update global state
+        });
+      }
+    });
   }
-  void showColorPickerDialog() {
+  void showColorPickerDialog(HabitDetailState habitDetailState) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -93,6 +96,7 @@ class _NewhabitPageState extends State<NewhabitPage> {
               onColorChanged: (color) {
                 setState(() {
                   currentColor = color;
+                  habitDetailState.updateColor(color);
                 });
               },
               showLabel: true,
@@ -112,7 +116,7 @@ class _NewhabitPageState extends State<NewhabitPage> {
     );
   }
 
-  Widget getStepContent(){
+  Widget getStepContent(HabitDetailState habitDetailState){
     if (currentStep == 2) {
       return Column(
         children: [
@@ -133,6 +137,7 @@ class _NewhabitPageState extends State<NewhabitPage> {
               borderRadius: BorderRadius.circular(12),
             ),
             child: TextField(
+              onChanged: (value) => habitDetailState.updateHabitName(value),
               textAlign: TextAlign.center,
               decoration: InputDecoration(
               border: InputBorder.none,
@@ -156,7 +161,7 @@ class _NewhabitPageState extends State<NewhabitPage> {
           ),
           SizedBox(height: 16),
           GestureDetector(
-            onTap: _showImagePicker, // Open the color picker on tap
+            onTap: () => _showImagePicker(habitDetailState), // Open the color picker on tap
             child: Container(
               width: 200,
               padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
@@ -184,7 +189,7 @@ class _NewhabitPageState extends State<NewhabitPage> {
                     child: Align(
                       alignment: Alignment.center,
                       child: Image.asset(
-                        selectedImage,
+                        habitDetailState.selectedImage,
                         width: 24,
                         height: 24,
                         fit: BoxFit.cover,
@@ -205,7 +210,7 @@ class _NewhabitPageState extends State<NewhabitPage> {
           ),
           SizedBox(height: 16),
           GestureDetector(
-            onTap: showColorPickerDialog, // Open the color picker on tap
+            onTap: () => showColorPickerDialog(habitDetailState), // Open the color picker on tap
             child: Container(
               width: 200,
               padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
@@ -236,7 +241,7 @@ class _NewhabitPageState extends State<NewhabitPage> {
                         height: 20,
                         width: 20,
                         decoration: BoxDecoration(
-                          color: currentColor,
+                          color: habitDetailState.currentColor,
                           borderRadius: BorderRadius.circular(36),
                         ),
                       ),
@@ -601,14 +606,15 @@ class _NewhabitPageState extends State<NewhabitPage> {
                 GestureDetector(
                   onTap: () {
                     setState(() {
-                      selectedContainer = 0; // Set selected container to 0
+                      selectedContainer = 0;
+                      habitDetailState.updateSelectedContainer(0);
                     });
                   },
                   child: Container(
                     width: 240,
                     height: 80,
                     decoration: BoxDecoration(
-                      color: selectedContainer == 0
+                      color: habitDetailState.selectedContainer == 0
                           ? Colors.purple.shade800
                           : Colors.purple.shade200,
                       borderRadius: BorderRadius.circular(16),
@@ -633,14 +639,15 @@ class _NewhabitPageState extends State<NewhabitPage> {
                     GestureDetector(
                       onTap: () {
                         setState(() {
-                          selectedContainer = 1; // Set selected container to 0
+                          selectedContainer = 1;
+                          habitDetailState.updateSelectedContainer(1);
                         });
                       },
                       child: Container(
                         width: 76,
                         height: 80,
                         decoration: BoxDecoration(
-                          color: selectedContainer == 1
+                          color: habitDetailState.selectedContainer == 1
                               ? Colors.purple.shade800
                               : Colors.purple.shade200,
                           borderRadius: BorderRadius.circular(16),
@@ -663,14 +670,15 @@ class _NewhabitPageState extends State<NewhabitPage> {
                     GestureDetector(
                       onTap: () {
                         setState(() {
-                          selectedContainer = 2; // Set selected container to 0
+                          selectedContainer = 2;
+                          habitDetailState.updateSelectedContainer(2);
                         });
                       },
                       child: Container(
                         width: 76,
                         height: 80,
                         decoration: BoxDecoration(
-                          color: selectedContainer == 2
+                          color: habitDetailState.selectedContainer == 2
                               ? Colors.purple.shade800
                               : Colors.purple.shade200,
                           borderRadius: BorderRadius.circular(16),
@@ -693,14 +701,15 @@ class _NewhabitPageState extends State<NewhabitPage> {
                     GestureDetector(
                       onTap: () {
                         setState(() {
-                          selectedContainer = 3; // Set selected container to 0
+                          selectedContainer = 3;
+                          habitDetailState.updateSelectedContainer(3);
                         });
                       },
                       child: Container(
                         width: 76,
                         height: 80,
                         decoration: BoxDecoration(
-                          color: selectedContainer == 3
+                          color: habitDetailState.selectedContainer == 3
                               ? Colors.purple.shade800
                               : Colors.purple.shade200,
                           borderRadius: BorderRadius.circular(16),
@@ -740,6 +749,9 @@ class _NewhabitPageState extends State<NewhabitPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    final habitDetailState = Provider.of<HabitDetailState>(context);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -806,7 +818,7 @@ class _NewhabitPageState extends State<NewhabitPage> {
                 minHeight: 8,
               ),
             ),
-            getStepContent(),
+            getStepContent(habitDetailState),
           ],
         ),
       ),
