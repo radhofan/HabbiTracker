@@ -3,6 +3,7 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'habit.dart';
 import 'package:provider/provider.dart';
 import 'habitDetail.dart';
+import 'package:flutter/services.dart';
 
 class NewhabitMainPage extends StatefulWidget {
   const NewhabitMainPage({super.key});
@@ -111,7 +112,7 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
   bool friday = true;
   bool saturday = true;
   bool sunday = true;
-
+  final TextEditingController weeklyGoalController = TextEditingController();
   void _showFrequencyOptions(HabitDetailState habitDetailState) {
     showDialog(
       context: context,
@@ -121,7 +122,7 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
             return AlertDialog(
               title: Text('Choose Frequency'),
               content: Container(
-                height: 540,
+                height: 640,
                 width: 240,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -415,33 +416,43 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
                           ],
                         ),
                       ),
-                    // SizedBox(height: 18),
-                    // Container(
-                    //   width: 180,
-                    //   decoration: BoxDecoration(
-                    //     color: Colors.purple.shade50,
-                    //     borderRadius: BorderRadius.circular(12),
-                    //   ),
-                    //   child: TextField(
-                    //     onChanged: (value) {
-                    //       final intValue = int.tryParse(value);
-                    //       if (intValue != null) {
-                    //         habitDetailState.updateWeeklyGoal(intValue);
-                    //       }
-                    //     },
-                    //     controller: weeklyGoalController,
-                    //     textAlign: TextAlign.center,
-                    //     keyboardType: TextInputType.number, // Shows number keyboard
-                    //     inputFormatters: <TextInputFormatter>[
-                    //       FilteringTextInputFormatter.digitsOnly, // Allows only digits (0-9)
-                    //     ],
-                    //     decoration: InputDecoration(
-                    //       border: InputBorder.none,
-                    //       hintText: '3',
-                    //     ),
-                    //   ),
-                    // ),
-                    SizedBox(height: 18),
+                    SizedBox(height: 16),
+                    Text(
+                      'What is your weekly goal?',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    Container(
+                      width: 180,
+                      height: 30,
+                      decoration: BoxDecoration(
+                        color: Colors.purple.shade100,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: TextField(
+                        onChanged: (value) {
+                          final intValue = int.tryParse(value);
+                          if (intValue != null) {
+                            habitDetailState.updateWeeklyGoal(intValue);
+                          }
+                        },
+                        controller: weeklyGoalController,
+                        textAlign: TextAlign.center,
+                        keyboardType: TextInputType.number, // Shows number keyboard
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly, // Allows only digits (0-9)
+                        ],
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: '3',
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 24),
                     GestureDetector(
                       onTap: () {
                         Navigator.pop(context); // closes the dialog
