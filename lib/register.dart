@@ -11,10 +11,12 @@ class RegisterPage extends StatefulWidget {
 }
 class _RegisterPageState extends State<RegisterPage> {
 
-  bool isLoading = false;
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
+  String? errorText;
 
-  // AuthButtonType buttonType = AuthButtonType.icon;
-  // AuthIconType iconType = AuthIconType.outlined;
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +49,7 @@ class _RegisterPageState extends State<RegisterPage> {
               height: 60,
               margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
               child: TextField(
+                controller: emailController,
                 decoration: InputDecoration(
                   labelText: 'Email',
                   filled: true,
@@ -64,6 +67,7 @@ class _RegisterPageState extends State<RegisterPage> {
               height: 60,
               margin: EdgeInsets.fromLTRB(12, 0, 12, 0),
               child: TextField(
+                controller: passwordController,
                 decoration: InputDecoration(
                   labelText: 'Password',
                   filled: true,
@@ -81,6 +85,7 @@ class _RegisterPageState extends State<RegisterPage> {
               height: 60,
               margin: EdgeInsets.fromLTRB(12, 0, 12, 0),
               child: TextField(
+                controller: confirmPasswordController,
                 decoration: InputDecoration(
                   labelText: 'Confirm Password',
                   filled: true,
@@ -101,8 +106,30 @@ class _RegisterPageState extends State<RegisterPage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  if (errorText != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Text(
+                        errorText!,
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                  SizedBox(height: 12),
                   TextButton(
                     onPressed: () {
+                      final email = emailController.text.trim();
+                      final password = passwordController.text;
+                      final confirmPassword = confirmPasswordController.text;
+
+                      if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+                        setState(() {
+                          errorText = 'Please fill all fields';
+                        });
+                        return;
+                      }
+                      setState(() {
+                        errorText = null;
+                      });
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => DashboardPage()),

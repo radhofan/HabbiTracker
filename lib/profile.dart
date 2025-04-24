@@ -31,7 +31,7 @@ class _ProfilePageState extends State<ProfilePage> {
               break;
           }
         },
-        selectedIndex: 0,
+        selectedIndex: 2,
         destinations: const <Widget>[
           NavigationDestination(
             icon: Icon(Icons.home),

@@ -5,6 +5,8 @@ import 'newHabitMain.dart';
 import 'package:provider/provider.dart';
 import 'habitDetail.dart';
 
+import 'package:flutter/services.dart';
+
 
 class NewhabitPage extends StatefulWidget {
   const NewhabitPage({super.key});
@@ -15,6 +17,13 @@ class NewhabitPage extends StatefulWidget {
 
 class _NewhabitPageState extends State<NewhabitPage> {
 
+  int currentStep = 2;
+  @override
+  void initState() {
+    super.initState();
+    currentStep = 2;
+  }
+
   Color currentColor = Colors.blue;
 
   void changeColor(Color color) {
@@ -22,8 +31,6 @@ class _NewhabitPageState extends State<NewhabitPage> {
       currentColor = color;
     });
   }
-
-  int currentStep = 2;
 
   int selectedContainer = -1;
 
@@ -116,6 +123,10 @@ class _NewhabitPageState extends State<NewhabitPage> {
     );
   }
 
+  final TextEditingController habitNameController = TextEditingController();
+  final TextEditingController weeklyGoalController = TextEditingController();
+  String? errorText;
+
   Widget getStepContent(HabitDetailState habitDetailState){
     if (currentStep == 2) {
       return Column(
@@ -138,6 +149,7 @@ class _NewhabitPageState extends State<NewhabitPage> {
             ),
             child: TextField(
               onChanged: (value) => habitDetailState.updateHabitName(value),
+              controller: habitNameController,
               textAlign: TextAlign.center,
               decoration: InputDecoration(
               border: InputBorder.none,
@@ -281,6 +293,7 @@ class _NewhabitPageState extends State<NewhabitPage> {
                 onTap: () {
                   setState(() {
                     selectedFrequency = 'Daily';
+                    habitDetailState.updateFrequency('Daily');
                   });
                 },
                 child: Container(
@@ -307,6 +320,7 @@ class _NewhabitPageState extends State<NewhabitPage> {
                 onTap: () {
                   setState(() {
                     selectedFrequency = 'Weekly';
+                    habitDetailState.updateFrequency('Weekly');
                   });
                 },
                 child: Container(
@@ -349,6 +363,7 @@ class _NewhabitPageState extends State<NewhabitPage> {
                     onTap: () {
                       setState(() {
                         monday = !monday;
+                        habitDetailState.updateDay('monday', monday);
                       });
                     },
                     child: Container(
@@ -376,6 +391,7 @@ class _NewhabitPageState extends State<NewhabitPage> {
                     onTap: () {
                       setState(() {
                         tuesday = !tuesday;
+                        habitDetailState.updateDay('tuesday', tuesday);
                       });
                     },
                     child: Container(
@@ -403,6 +419,7 @@ class _NewhabitPageState extends State<NewhabitPage> {
                     onTap: () {
                       setState(() {
                         wednesday = !wednesday;
+                        habitDetailState.updateDay('wednesday', wednesday);
                       });
                     },
                     child: Container(
@@ -430,6 +447,7 @@ class _NewhabitPageState extends State<NewhabitPage> {
                     onTap: () {
                       setState(() {
                         thursday = !thursday;
+                        habitDetailState.updateDay('thursday', thursday);
                       });
                     },
                     child: Container(
@@ -457,6 +475,7 @@ class _NewhabitPageState extends State<NewhabitPage> {
                     onTap: () {
                       setState(() {
                         friday = !friday;
+                        habitDetailState.updateDay('friday', friday);
                       });
                     },
                     child: Container(
@@ -484,6 +503,7 @@ class _NewhabitPageState extends State<NewhabitPage> {
                     onTap: () {
                       setState(() {
                         saturday = !saturday;
+                        habitDetailState.updateDay('saturday', saturday);
                       });
                     },
                     child: Container(
@@ -511,6 +531,7 @@ class _NewhabitPageState extends State<NewhabitPage> {
                     onTap: () {
                       setState(() {
                         sunday = !sunday;
+                        habitDetailState.updateDay('sunday', sunday);
                       });
                     },
                     child: Container(
@@ -575,10 +596,21 @@ class _NewhabitPageState extends State<NewhabitPage> {
               borderRadius: BorderRadius.circular(12),
             ),
             child: TextField(
+              onChanged: (value) {
+                final intValue = int.tryParse(value);
+                if (intValue != null) {
+                  habitDetailState.updateWeeklyGoal(intValue);
+                }
+              },
+              controller: weeklyGoalController,
               textAlign: TextAlign.center,
+              keyboardType: TextInputType.number, // Shows number keyboard
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly, // Allows only digits (0-9)
+              ],
               decoration: InputDecoration(
                 border: InputBorder.none,
-                hintText: '1 times',
+                hintText: '3',
               ),
             ),
           ),
@@ -737,7 +769,7 @@ class _NewhabitPageState extends State<NewhabitPage> {
       );
     } else {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => NewhabitMainPage()),
         );
@@ -749,9 +781,8 @@ class _NewhabitPageState extends State<NewhabitPage> {
 
   @override
   Widget build(BuildContext context) {
-
     final habitDetailState = Provider.of<HabitDetailState>(context);
-
+    print('build: currentStep = $currentStep');
     return Scaffold(
       resizeToAvoidBottomInset: false,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -761,6 +792,35 @@ class _NewhabitPageState extends State<NewhabitPage> {
         width: double.infinity,
         child: ElevatedButton(
           onPressed: () {
+
+            final habitName = habitNameController.text.trim();
+            final weeklyGoal = weeklyGoalController.text;
+
+            if ( habitName.isEmpty && currentStep == 2) {
+              setState(() {
+                errorText = 'Please fill the name of the habit!';
+              });
+              return;
+            }
+
+            if ( weeklyGoal.isEmpty && currentStep == 8) {
+              setState(() {
+                errorText = 'Please fill your weekly goal!';
+              });
+              return;
+            }
+
+            if ( selectedContainer == -1 && currentStep == 10) {
+              setState(() {
+                errorText = 'Please fill the time of your habit';
+              });
+              return;
+            }
+
+            setState(() {
+              errorText = null;
+            });
+
             setState(() {
               currentStep += 2;
             });
@@ -819,6 +879,19 @@ class _NewhabitPageState extends State<NewhabitPage> {
               ),
             ),
             getStepContent(habitDetailState),
+            SizedBox(height: 16),
+            Column(
+              children: [
+                if (errorText != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Text(
+                      errorText!,
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ),
+              ]
+            ),
           ],
         ),
       ),

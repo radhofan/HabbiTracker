@@ -11,6 +11,9 @@ class LoginPage extends StatefulWidget {
 }
 class _LoginPageState extends State<LoginPage> {
 
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  String? errorText;
   bool isLoading = false;
 
   @override
@@ -43,6 +46,7 @@ class _LoginPageState extends State<LoginPage> {
               height: 60,
               margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
               child: TextField(
+                controller: emailController,
                 decoration: InputDecoration(
                   labelText: 'Email',
                   filled: true,
@@ -60,6 +64,7 @@ class _LoginPageState extends State<LoginPage> {
               height: 60,
               margin: EdgeInsets.fromLTRB(12, 0, 12, 0),
               child: TextField(
+                controller: passwordController,
                 decoration: InputDecoration(
                   labelText: 'Password',
                   filled: true,
@@ -98,8 +103,29 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  if (errorText != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Text(
+                        errorText!,
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                  SizedBox(height: 12),
                   TextButton(
                     onPressed: () {
+                      final email = emailController.text.trim();
+                      final password = passwordController.text;
+
+                      if (email.isEmpty || password.isEmpty) {
+                        setState(() {
+                          errorText = 'Email and password cannot be empty';
+                        });
+                        return;
+                      }
+                      setState(() {
+                        errorText = null;
+                      });
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => DashboardPage()),

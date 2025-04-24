@@ -31,7 +31,7 @@ class _HabitPageState extends State<HabitPage> {
               break;
           }
         },
-        selectedIndex: 0,
+        selectedIndex: 1,
         destinations: const <Widget>[
           NavigationDestination(
             icon: Icon(Icons.home),
@@ -79,6 +79,12 @@ class _HabitPageState extends State<HabitPage> {
                     context,
                     MaterialPageRoute(builder: (context) => NewhabitPage()),
                   );
+                  // Navigator.pushReplacement(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => NewhabitPage(key: UniqueKey()),
+                  //   ),
+                  // );
                 },
                 child: Container(
                   height: 80,

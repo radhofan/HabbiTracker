@@ -96,12 +96,382 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
     ).then((newImage) {
       if (newImage != null) {
         setState(() {
-          selectedImage = newImage;  // Update local state
-          habitDetailState.updateSelectedImage(newImage);  // Update global state
+          selectedImage = newImage;
+          habitDetailState.updateSelectedImage(newImage);
         });
       }
     });
   }
+
+  String selectedFrequency = 'Daily';
+  bool monday = true;
+  bool tuesday = true;
+  bool wednesday = true;
+  bool thursday = true;
+  bool friday = true;
+  bool saturday = true;
+  bool sunday = true;
+
+  void _showFrequencyOptions(HabitDetailState habitDetailState) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text('Choose Frequency'),
+              content: Container(
+                height: 540,
+                width: 240,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              selectedFrequency = 'Daily';
+                              habitDetailState.updateFrequency('Daily');
+                            });
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                            decoration: BoxDecoration(
+                              color: habitDetailState.selectedFrequency == 'Daily'
+                                  ? Colors.purple.shade200
+                                  : Colors.grey.shade200,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              'Daily',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: habitDetailState.selectedFrequency == 'Daily'
+                                    ? Colors.white
+                                    : Colors.black,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 16),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              selectedFrequency = 'Weekly';
+                              habitDetailState.updateFrequency('Weekly');
+                            });
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                            decoration: BoxDecoration(
+                              color: habitDetailState.selectedFrequency == 'Weekly'
+                                  ? Colors.purple.shade200
+                                  : Colors.grey.shade200,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              'Weekly',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: habitDetailState.selectedFrequency == 'Weekly'
+                                    ? Colors.white
+                                    : Colors.black,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 12),
+                    if (selectedFrequency == 'Daily')
+                      Container(
+                        child: Column(
+                          children: [
+                            Text(
+                              'On these days',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 12),
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  monday = !monday;
+                                  habitDetailState.updateDay('monday', monday);
+                                });
+                              },
+                              child: Container(
+                                height: 40,
+                                width: 240,
+                                decoration: BoxDecoration(
+                                  color: habitDetailState.getSelectedDays().contains('Monday') ? Colors.purple[200] : Colors.purple[800],
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    'Monday',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            // Similar GestureDetector for other days...
+                            SizedBox(height: 16),
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  tuesday = !tuesday;
+                                  habitDetailState.updateDay('tuesday', tuesday);
+                                });
+                              },
+                              child: Container(
+                                height: 40,
+                                width: 240,
+                                decoration: BoxDecoration(
+                                  color: habitDetailState.getSelectedDays().contains('Tuesday') ? Colors.purple[200] : Colors.purple[800],
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    'Tuesday',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 16),
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  wednesday = !wednesday;
+                                  habitDetailState.updateDay('wednesday', wednesday);
+                                });
+                              },
+                              child: Container(
+                                height: 40,
+                                width: 240,
+                                decoration: BoxDecoration(
+                                  color:  habitDetailState.getSelectedDays().contains('Wednesday') ? Colors.purple[200] : Colors.purple[800],
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    'Wednesday',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 16),
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  thursday = !thursday;
+                                  habitDetailState.updateDay('thursday', thursday);
+                                });
+                              },
+                              child: Container(
+                                height: 40,
+                                width: 240,
+                                decoration: BoxDecoration(
+                                  color:  habitDetailState.getSelectedDays().contains('Thursday') ? Colors.purple[200] : Colors.purple[800],
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    'Thursday',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 16),
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  friday = !friday;
+                                  habitDetailState.updateDay('friday', friday);
+                                });
+                              },
+                              child: Container(
+                                height: 40,
+                                width: 240,
+                                decoration: BoxDecoration(
+                                  color:  habitDetailState.getSelectedDays().contains('Friday') ? Colors.purple[200] : Colors.purple[800],
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    'Friday',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 16),
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  saturday = !saturday;
+                                  habitDetailState.updateDay('saturday', saturday);
+                                });
+                              },
+                              child: Container(
+                                height: 40,
+                                width: 240,
+                                decoration: BoxDecoration(
+                                  color:  habitDetailState.getSelectedDays().contains('Saturday') ? Colors.purple[200] : Colors.purple[800],
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    'Saturday',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 16),
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  sunday = !sunday;
+                                  habitDetailState.updateDay('sunday', sunday);
+                                });
+                              },
+                              child: Container(
+                                height: 40,
+                                width: 240,
+                                decoration: BoxDecoration(
+                                  color:  habitDetailState.getSelectedDays().contains('Sunday') ? Colors.purple[200] : Colors.purple[800],
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    'Sunday',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    else if (selectedFrequency == 'Weekly')
+                      Container(
+                        width: 320,
+                        child: Column(
+                          children: [
+                            Text(
+                              'This habit will be tracked on a weekly basis and reset every Sunday',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
+                    // SizedBox(height: 18),
+                    // Container(
+                    //   width: 180,
+                    //   decoration: BoxDecoration(
+                    //     color: Colors.purple.shade50,
+                    //     borderRadius: BorderRadius.circular(12),
+                    //   ),
+                    //   child: TextField(
+                    //     onChanged: (value) {
+                    //       final intValue = int.tryParse(value);
+                    //       if (intValue != null) {
+                    //         habitDetailState.updateWeeklyGoal(intValue);
+                    //       }
+                    //     },
+                    //     controller: weeklyGoalController,
+                    //     textAlign: TextAlign.center,
+                    //     keyboardType: TextInputType.number, // Shows number keyboard
+                    //     inputFormatters: <TextInputFormatter>[
+                    //       FilteringTextInputFormatter.digitsOnly, // Allows only digits (0-9)
+                    //     ],
+                    //     decoration: InputDecoration(
+                    //       border: InputBorder.none,
+                    //       hintText: '3',
+                    //     ),
+                    //   ),
+                    // ),
+                    SizedBox(height: 18),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context); // closes the dialog
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        decoration: BoxDecoration(
+                          color: Colors.purple.shade200,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          'Close',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -325,19 +695,11 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
                                 children: [
                                   Column(
                                     children: [
+                                      SizedBox(height: 12),
                                       Text(
-                                        '1 time',
+                                        '${habitDetailState.weeklyGoal} per week',
                                         style: TextStyle(
                                           fontSize: 16,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        textAlign: TextAlign.start,
-                                      ),
-                                      Text(
-                                        'or more per day',
-                                        style: TextStyle(
-                                          fontSize: 12,
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -348,9 +710,7 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
                                   SizedBox(
                                     width: 120, // 👈 set your desired width
                                     child: ElevatedButton(
-                                      onPressed: () {
-                                        setState(() {});
-                                      },
+                                      onPressed: () => _showFrequencyOptions(habitDetailState),
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: Colors.purple[200],
                                         foregroundColor: Colors.black,
@@ -359,7 +719,7 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
                                         ),
                                       ),
                                       child: const Text(
-                                        'Add habit',
+                                        'Change',
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16,
@@ -387,7 +747,7 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
                                     Padding(
                                       padding: EdgeInsets.only(right: 16), // 👈 just padding on the left
                                       child: Text(
-                                        'Every day',
+                                        habitDetailState.selectedFrequency,
                                         style: TextStyle(
                                           fontSize: 16,
                                           color: Colors.black,
@@ -641,6 +1001,7 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
                         width: 150, // 👈 set your desired width
                         child: ElevatedButton(
                           onPressed: () {
+                            habitDetailState.reset();
                             Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => HabitPage()),

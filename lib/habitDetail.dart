@@ -37,6 +37,7 @@ class HabitDetailState with ChangeNotifier {
     notifyListeners();
   }
 
+
   bool monday = true;
   bool tuesday = true;
   bool wednesday = true;
@@ -44,7 +45,17 @@ class HabitDetailState with ChangeNotifier {
   bool friday = true;
   bool saturday = true;
   bool sunday = true;
-
+  List<String> getSelectedDays() {
+    List<String> selectedDays = [];
+    if (monday) selectedDays.add('Monday');
+    if (tuesday) selectedDays.add('Tuesday');
+    if (wednesday) selectedDays.add('Wednesday');
+    if (thursday) selectedDays.add('Thursday');
+    if (friday) selectedDays.add('Friday');
+    if (saturday) selectedDays.add('Saturday');
+    if (sunday) selectedDays.add('Sunday');
+    return selectedDays;
+  }
   void updateDay(String day, bool value) {
     switch (day.toLowerCase()) {
       case 'monday':
@@ -71,4 +82,28 @@ class HabitDetailState with ChangeNotifier {
     }
     notifyListeners();
   }
+
+  int _weeklyGoal = 0;
+  int get weeklyGoal => _weeklyGoal;
+  void updateWeeklyGoal(int newWeeklyGoal){
+    _weeklyGoal = newWeeklyGoal;
+    notifyListeners();
+  }
+
+  void reset() {
+    _habitName = '';
+    _currentColor = Colors.grey;
+    _selectedImage = 'assets/workout.png';
+    _selectedContainer = -1;
+    _selectedFrequency = 'Daily';
+    monday = true;
+    tuesday = true;
+    wednesday = true;
+    thursday = true;
+    friday = true;
+    saturday = true;
+    sunday = true;
+    notifyListeners();
+  }
+
 }
