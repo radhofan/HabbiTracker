@@ -4,6 +4,7 @@ import 'habit.dart';
 import 'package:provider/provider.dart';
 import 'habitDetail.dart';
 import 'package:flutter/services.dart';
+import 'newHabitView.dart';
 
 class NewhabitMainPage extends StatefulWidget {
   const NewhabitMainPage({super.key});
@@ -1015,7 +1016,7 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
                             habitDetailState.reset();
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => HabitPage()),
+                              MaterialPageRoute(builder: (context) => NewHabitViewPage()),
                             );
                           },
                           style: ElevatedButton.styleFrom(
