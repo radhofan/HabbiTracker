@@ -107,7 +107,7 @@ class _NewHabitViewPageState extends State<NewHabitViewPage> {
                         child: Align(
                           alignment: Alignment.center,
                           child: Image.asset(
-                            'assets/workout.png',
+                            'assets/basketRun.png',
                             width: 24,
                             height: 24,
                             fit: BoxFit.cover,

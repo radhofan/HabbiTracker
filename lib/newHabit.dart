@@ -661,6 +661,18 @@ class _NewhabitPageState extends State<NewhabitPage> {
                             fit: BoxFit.cover,
                           ),
                         ),
+                        alignment: Alignment.bottomCenter,
+                        child: Padding(
+                          padding: EdgeInsets.only(bottom: 6),
+                          child: Text(
+                            'All Day',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -694,6 +706,18 @@ class _NewhabitPageState extends State<NewhabitPage> {
                                 fit: BoxFit.cover,
                               ),
                             ),
+                            alignment: Alignment.bottomCenter,
+                            child: Padding(
+                              padding: EdgeInsets.only(bottom: 6),
+                              child: Text(
+                                'Morning',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -725,6 +749,18 @@ class _NewhabitPageState extends State<NewhabitPage> {
                                 fit: BoxFit.cover,
                               ),
                             ),
+                            alignment: Alignment.bottomCenter,
+                            child: Padding(
+                              padding: EdgeInsets.only(bottom: 6),
+                              child: Text(
+                                'Afternoon',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -754,6 +790,18 @@ class _NewhabitPageState extends State<NewhabitPage> {
                               image: DecorationImage(
                                 image: AssetImage('assets/night.png'),
                                 fit: BoxFit.cover,
+                              ),
+                            ),
+                            alignment: Alignment.bottomCenter,
+                            child: Padding(
+                              padding: EdgeInsets.only(bottom: 6),
+                              child: Text(
+                                'Evening',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
                           ),
@@ -872,10 +920,15 @@ class _NewhabitPageState extends State<NewhabitPage> {
             SizedBox(height: 32),
             Container(
               width: 180,
-              child: LinearProgressIndicator(
-                value: currentStep * 0.1,
-                semanticsLabel: 'Achieved',
-                minHeight: 8,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: LinearProgressIndicator(
+                  value: currentStep * 0.1,
+                  semanticsLabel: 'Achieved',
+                  minHeight: 8,
+                  backgroundColor: Colors.grey.shade300,
+                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF6100ED)),
+                ),
               ),
             ),
             getStepContent(habitDetailState),

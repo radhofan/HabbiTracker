@@ -71,7 +71,7 @@ class _HabitCalenderPageState extends State<HabitCalenderPage> {
                             child: Align(
                               alignment: Alignment.center,
                               child: Image.asset(
-                                'assets/workout.png',
+                                'assets/basketRun.png',
                                 width: 64,
                                 height: 64,
                                 fit: BoxFit.cover,
@@ -144,7 +144,7 @@ class _HabitCalenderPageState extends State<HabitCalenderPage> {
                             child: Align(
                               alignment: Alignment.center,
                               child: Image.asset(
-                                'assets/api-new.png',
+                                'assets/Group 3.png',
                                 width: 64,
                                 height: 64,
                                 fit: BoxFit.cover,
@@ -182,7 +182,7 @@ class _HabitCalenderPageState extends State<HabitCalenderPage> {
                     padding: const EdgeInsets.fromLTRB(64, 18, 64, 96),
                     child: Container(
                       width: 400,
-                      height: 400,
+                      height: 450,
                       decoration: BoxDecoration(
                         color: Color(0xFFEADBFF), // 👈 light purple background
                         borderRadius: BorderRadius.circular(16), // optional rounded corners
