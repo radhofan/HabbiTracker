@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dashboard.dart';
-import 'habit.dart';
 import 'profile.dart';
 import 'newHabit.dart';
+import 'editHabit.dart';
+import 'service/api_service.dart';
 
 class HabitPage extends StatefulWidget {
   const HabitPage({super.key});
@@ -11,6 +12,34 @@ class HabitPage extends StatefulWidget {
   State<HabitPage> createState() => _HabitPageState();
 }
 class _HabitPageState extends State<HabitPage> {
+
+  List<dynamic> _habits = [];
+  bool _isLoading = true;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    print('initState called - about to fetch habits');
+    _fetchHabits();
+  }
+
+  Future<void> _fetchHabits() async {
+    try {
+      final habits = await ApiService.getHabitsByUser(1); // Pass the actual userId here
+      print('Fetched habits: $habits');
+      setState(() {
+        _habits = habits;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _error = e.toString();
+        _isLoading = false;
+      });
+    }
+  }
+
   late AnimationController controller;
   int currentPageIndex = 0;
 
@@ -79,12 +108,6 @@ class _HabitPageState extends State<HabitPage> {
                     context,
                     MaterialPageRoute(builder: (context) => NewhabitPage()),
                   );
-                  // Navigator.pushReplacement(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => NewhabitPage(key: UniqueKey()),
-                  //   ),
-                  // );
                 },
                 child: Container(
                   height: 80,
@@ -122,6 +145,116 @@ class _HabitPageState extends State<HabitPage> {
                   ),
                 ),
               ),
+              SizedBox(height: 16),
+              Container(
+                width: 310,
+                child: Column(
+                  children: [
+                    Text(
+                      'Your Habits',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      'Adjust Your Habits',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 16),
+              ..._habits.map((habit) {
+                return GestureDetector(
+                  onTap: () {
+                    // Navigate to EditHabit page, passing habit id
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditHabit(habitId: habit['id']),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    height: 80,
+                    width: 340,
+                    margin: EdgeInsets.symmetric(vertical: 8),
+                    child: Stack(
+                      children: [
+                        Positioned(
+                          left: 40.0,
+                          child: Container(
+                            height: 80,
+                            width: 290,
+                            decoration: BoxDecoration(
+                              color: Color(0xFFEADBFF),
+                              borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(16),
+                                bottomRight: Radius.circular(16),
+                              ),
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 42),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    habit['name'] ?? 'No name',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    habit['description'] ?? 'No description',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          left: 15.0,
+                          child: Container(
+                            height: 80,
+                            width: 60,
+                            decoration: BoxDecoration(
+                              color: Color(0xFFC3A1FF),
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(16),
+                                bottomLeft: Radius.circular(16),
+                                topRight: Radius.circular(32),
+                                bottomRight: Radius.circular(32),
+                              ),
+                            ),
+                            child: Center(
+                              child: Image.asset(
+                                habit['icon_default'] ?? 'assets/workout.png',
+                                width: 40,
+                                height: 30,
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }).toList(),
               SizedBox(height: 16),
               Container(
                 width: 310,

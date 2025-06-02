@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'habit.dart';
@@ -7,22 +9,150 @@ import 'package:flutter/services.dart';
 import 'newHabitView.dart';
 import 'service/api_service.dart';
 
-class NewhabitMainPage extends StatefulWidget {
-  const NewhabitMainPage({super.key});
+class EditHabit extends StatefulWidget {
+  final int habitId;  // add the parameter here
+
+  const EditHabit({super.key, required this.habitId});  // required in constructor
 
   @override
-  State<NewhabitMainPage> createState() => _NewhabitMainPage();
+  State<EditHabit> createState() => _EditHabit();
 }
 
-class _NewhabitMainPage extends State<NewhabitMainPage> {
+class _EditHabit extends State<EditHabit> {
 
+  bool _isDeleting = false;
+  String? _error;
+  bool _isLoading = false;
 
+  // Make sure you receive the habitId from the widget
+  int get habitId => widget.habitId;
+
+  Map<String, dynamic>? _habit;
+  bool _isUpdating = false;
+
+  String selectedFrequency = '';
+  String selectedImage = '';
+  TextEditingController? _habitNameController;
+  int completed = 0;
+  int inProgress = 0;
+  int notStarted = 0;
+  int time = 0;
+
+  bool monday = false;
+  bool tuesday = false;
+  bool wednesday = false;
+  bool thursday = false;
+  bool friday = false;
+  bool saturday = false;
+  bool sunday = false;
+
+  Color currentColor = Colors.blue;
   void changeColor(Color color) {
     setState(() {
       currentColor = color;
     });
   }
 
+  int colorFromDb = 4281558371;
+  Color? myColor;
+
+  @override
+  void initState() {
+    super.initState();
+    _habitNameController = TextEditingController();
+    myColor = Color(colorFromDb);
+    _getHabit();
+  }
+
+
+  Future<void> _getHabit() async {
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
+    try {
+      final habit = await ApiService.getHabit(habitId);
+      print(habit);
+
+      setState(() {
+        _habitNameController?.text = habit['name'] ?? '';
+        selectedImage = '${habit['icon_default']}';
+        selectedFrequency = habit['goal_time'];
+
+        // Parse goal_status JSON string
+        final goalStatus = jsonDecode(habit['goal_status']);
+        completed = goalStatus['completed'];
+        inProgress = goalStatus['in_progress'];
+        notStarted = goalStatus['not_started'];
+
+        // Parse time_options JSON array
+        time = habit['time_options'];
+        int color = habit['color'];
+        myColor = Color(color);
+
+        // Weekday logic (hardcoded for now)
+        monday = true;
+        tuesday = true;
+        wednesday = true;
+        thursday = true;
+        friday = true;
+        saturday = true;
+        sunday = true;
+
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _error = e.toString();
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _updateHabit(int habitId, Map<String, dynamic> updatedData) async {
+    setState(() {
+      _isUpdating = true;
+      _error = null;
+    });
+
+    try {
+      final updatedHabit = await ApiService.updateHabit(habitId, updatedData);
+      print('Update successful: $updatedHabit');
+      setState(() {
+        _habit = updatedHabit; // update local habit data with response
+        _isUpdating = false;
+      });
+      // optionally pop or show success message here
+    } catch (e) {
+      setState(() {
+        _error = e.toString();
+        _isUpdating = false;
+      });
+    }
+  }
+
+  Future<void> _deleteHabit() async {
+    setState(() {
+      _isDeleting = true;
+      _error = null;
+    });
+
+    try {
+      print('Calling deleteHabit API...');
+      final responseBody = await ApiService.deleteHabit(habitId);
+      print('Delete successful: $responseBody');  // Print API response
+
+      if (mounted) {
+        Navigator.pop(context, true); // Indicate success on pop
+      }
+    } catch (e) {
+      setState(() {
+        _error = e.toString();
+        _isDeleting = false;
+      });
+    }
+  }
   void showColorPickerDialog(HabitDetailState habitDetailState) {
     showDialog(
       context: context,
@@ -55,7 +185,6 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
     );
   }
 
-  int selectedContainer = -1;
 
   final List<String> imageList = [
     'assets/book.png',
@@ -104,63 +233,7 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
     });
   }
 
-  String selectedFrequency = 'Daily';
-  bool monday = true;
-  bool tuesday = true;
-  bool wednesday = true;
-  bool thursday = true;
-  bool friday = true;
-  bool saturday = true;
-  bool sunday = true;
-  String selectedImage = 'assets/workout.png';
-  Color currentColor = Colors.blue;
-
   final TextEditingController weeklyGoalController = TextEditingController();
-
-  Future<void> _submitHabit(BuildContext context, HabitDetailState habitDetailState) async {
-    final int userId = 1; // Hardcoded user for now
-
-    final String name = habitDetailState.habitName;
-
-    // Generate fallback for icon_default
-    final String iconDefault = 'default-icon.png';
-
-    // Use currentColor or fallback
-    final String colorHex = '#${currentColor.value.toRadixString(16).padLeft(8, '0')}';
-
-    // Use selectedImage or fallback
-    final String icon = selectedImage ?? 'default-icon.png';
-
-    // Random/default fallback values
-    final Map<String, dynamic> habitData = {
-      'name': name,
-      'icon_default': iconDefault,
-      'icon_status': {
-        'active': 'icon-active.png',
-        'inactive': 'icon-inactive.png',
-      },
-      'goal_time': selectedFrequency ?? 'daily',
-      'goal_status': {
-        'completed': 0,
-        'in_progress': 0,
-        'not_started': 1,
-      },
-      'time_options': ['morning'], // can make this dynamic if needed
-    };
-
-    try {
-      final response = await ApiService.createHabitForUser(userId, habitData);
-      print('API response: $response');
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => NewhabitMainPage()),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
-    }
-  }
 
   void _showFrequencyOptions(HabitDetailState habitDetailState) {
     showDialog(
@@ -550,7 +623,7 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'New Habit',
+                    'Update Habit',
                     style: TextStyle(
                       fontSize: 24,
                       color: Colors.black,
@@ -578,19 +651,18 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
                   ),
                   SizedBox(height: 12),
                   Container(
-                    decoration: BoxDecoration(
-                      color: Colors.purple.shade100,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: TextFormField(
-                      initialValue: habitDetailState.habitName,
-                      onChanged: (value) => habitDetailState.updateHabitName(value),
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: 'Enter habit name',
+                      decoration: BoxDecoration(
+                        color: Colors.purple.shade100,
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      textAlign: TextAlign.center,
-                    )
+                      child: TextFormField(
+                        controller: _habitNameController,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: 'Enter habit name',
+                        ),
+                        textAlign: TextAlign.center,
+                      )
                   ),
                 ],
               ),
@@ -643,7 +715,7 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
                                 child: Align(
                                   alignment: Alignment.center,
                                   child: Image.asset(
-                                    habitDetailState.selectedImage,
+                                    selectedImage,
                                     width: 24,
                                     height: 24,
                                     fit: BoxFit.cover,
@@ -695,7 +767,7 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
                                     height: 20,
                                     width: 20,
                                     decoration: BoxDecoration(
-                                      color: habitDetailState.currentColor,
+                                      color: myColor,
                                       borderRadius: BorderRadius.circular(36),
                                     ),
                                   ),
@@ -846,15 +918,14 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
                             GestureDetector(
                               onTap: () {
                                 setState(() {
-                                  selectedContainer = 0;
-                                  habitDetailState.updateSelectedContainer(0);
+                                  time = 0;
                                 });
                               },
                               child: Container(
                                 width: 70,
                                 height: 70,
                                 decoration: BoxDecoration(
-                                  color: habitDetailState.selectedContainer == 0
+                                  color: time == 0
                                       ? Colors.purple.shade800
                                       : Colors.purple.shade200,
                                   borderRadius: BorderRadius.circular(16),
@@ -877,15 +948,14 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
                             GestureDetector(
                               onTap: () {
                                 setState(() {
-                                  selectedContainer = 1;
-                                  habitDetailState.updateSelectedContainer(1);
+                                  time = 1;
                                 });
                               },
                               child: Container(
                                 width: 70,
                                 height: 70,
                                 decoration: BoxDecoration(
-                                  color: habitDetailState.selectedContainer == 1
+                                  color: time == 1
                                       ? Colors.purple.shade800
                                       : Colors.purple.shade200,
                                   borderRadius: BorderRadius.circular(16),
@@ -908,15 +978,14 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
                             GestureDetector(
                               onTap: () {
                                 setState(() {
-                                  selectedContainer = 2;
-                                  habitDetailState.updateSelectedContainer(2);
+                                  time = 2;
                                 });
                               },
                               child: Container(
                                 width: 70,
                                 height: 70,
                                 decoration: BoxDecoration(
-                                  color: habitDetailState.selectedContainer == 2
+                                  color: time == 2
                                       ? Colors.purple.shade800
                                       : Colors.purple.shade200,
                                   borderRadius: BorderRadius.circular(16),
@@ -939,15 +1008,14 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
                             GestureDetector(
                               onTap: () {
                                 setState(() {
-                                  selectedContainer = 3;
-                                  habitDetailState.updateSelectedContainer(3);
+                                  time = 3;
                                 });
                               },
                               child: Container(
                                 width: 70,
                                 height: 70,
                                 decoration: BoxDecoration(
-                                  color: habitDetailState.selectedContainer == 3
+                                  color: time == 3
                                       ? Colors.purple.shade800
                                       : Colors.purple.shade200,
                                   borderRadius: BorderRadius.circular(16),
@@ -1034,7 +1102,8 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
                       SizedBox(
                         width: 150,
                         child: ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
+                            await _deleteHabit();
                             Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => HabitPage()),
@@ -1049,7 +1118,7 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
                             ),
                           ),
                           child: const Text(
-                            'Cancel habit',
+                            'Delete habit',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
@@ -1061,7 +1130,14 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
                         width: 150, // 👈 set your desired width
                         child: ElevatedButton(
                           onPressed: () async {
-                            await _submitHabit(context, habitDetailState);      // submit first
+                            Map<String, dynamic> updatedData = {
+                              'name': _habitNameController?.text,
+                              'color': myColor,
+                              'goal_time': selectedFrequency,
+                              'icon_default': selectedImage,
+                              'time_options': time,
+                            };
+                            await _updateHabit(habitId, updatedData);
                             habitDetailState.reset();         // then reset state
                             Navigator.push(
                               context,
@@ -1076,7 +1152,7 @@ class _NewhabitMainPage extends State<NewhabitMainPage> {
                             ),
                           ),
                           child: const Text(
-                            'Add habit',
+                            'Update Habit',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16,

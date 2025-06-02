@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:auth_buttons/auth_buttons.dart';
 import 'register.dart';
 import 'dashboard.dart';
+import 'service/api_service.dart'; // <-- Make sure this import is correct
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -9,8 +10,8 @@ class LoginPage extends StatefulWidget {
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
-class _LoginPageState extends State<LoginPage> {
 
+class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   String? errorText;
@@ -65,6 +66,7 @@ class _LoginPageState extends State<LoginPage> {
               margin: EdgeInsets.fromLTRB(12, 0, 12, 0),
               child: TextField(
                 controller: passwordController,
+                obscureText: true,
                 decoration: InputDecoration(
                   labelText: 'Password',
                   filled: true,
@@ -113,7 +115,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   SizedBox(height: 12),
                   TextButton(
-                    onPressed: () {
+                    onPressed: () async {
                       final email = emailController.text.trim();
                       final password = passwordController.text;
 
@@ -123,13 +125,37 @@ class _LoginPageState extends State<LoginPage> {
                         });
                         return;
                       }
+
                       setState(() {
                         errorText = null;
+                        isLoading = true;
                       });
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => DashboardPage()),
-                      );
+
+                      try {
+                        final response = await ApiService.login(
+                          email: email,
+                          password: password,
+                        );
+
+                        // Optionally: save token or user data
+                        // final userId = response['user']['id'];
+                        // final token = response['token'];
+
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => DashboardPage()),
+                        );
+                      } catch (e) {
+                        setState(() {
+                          errorText =
+                              e.toString().replaceFirst('Exception: ', '');
+                        });
+                      } finally {
+                        setState(() {
+                          isLoading = false;
+                        });
+                      }
                     },
                     style: TextButton.styleFrom(
                       backgroundColor: Color(0xFF6100ED),
@@ -138,7 +164,11 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       minimumSize: Size(300, 60),
                     ),
-                    child: Text(
+                    child: isLoading
+                        ? CircularProgressIndicator(
+                      color: Colors.white,
+                    )
+                        : Text(
                       'Login',
                       style: TextStyle(
                         color: Colors.white,
@@ -151,10 +181,11 @@ class _LoginPageState extends State<LoginPage> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => RegisterPage()),
+                        MaterialPageRoute(
+                            builder: (context) => RegisterPage()),
                       );
                     },
-                    child:  Text(
+                    child: Text(
                       'Create new account',
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -186,7 +217,6 @@ class _LoginPageState extends State<LoginPage> {
                         },
                         isLoading: isLoading,
                         style: AuthButtonStyle(
-                          //iconType: AuthIconType.secondary,
                           buttonType: AuthButtonType.icon,
                         ),
                       ),
@@ -198,7 +228,6 @@ class _LoginPageState extends State<LoginPage> {
                         },
                         isLoading: isLoading,
                         style: AuthButtonStyle(
-                          //iconType: AuthIconType.secondary,
                           buttonType: AuthButtonType.icon,
                         ),
                       ),
@@ -210,21 +239,17 @@ class _LoginPageState extends State<LoginPage> {
                         },
                         isLoading: isLoading,
                         style: AuthButtonStyle(
-                          //iconType: AuthIconType.secondary,
                           buttonType: AuthButtonType.icon,
                         ),
                       ),
                     ],
                   ),
-                ], //children
+                ],
               ),
             ),
-          ], // children
+          ],
         ),
       ),
     );
   }
 }
-
-
-

@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'habitDetail.dart';
 
 import 'package:flutter/services.dart';
+import 'service/api_service.dart';
 
 
 class NewhabitPage extends StatefulWidget {
@@ -24,8 +25,6 @@ class _NewhabitPageState extends State<NewhabitPage> {
     currentStep = 2;
   }
 
-  Color currentColor = Colors.blue;
-
   void changeColor(Color color) {
     setState(() {
       currentColor = color;
@@ -33,7 +32,11 @@ class _NewhabitPageState extends State<NewhabitPage> {
   }
 
   int selectedContainer = -1;
+  String? errorText;
 
+  final TextEditingController habitNameController = TextEditingController();
+  final TextEditingController weeklyGoalController = TextEditingController();
+  Color currentColor = Colors.blue;
   String selectedFrequency = 'Daily';
 
   bool monday = true;
@@ -55,6 +58,54 @@ class _NewhabitPageState extends State<NewhabitPage> {
     'assets/bed.png',
     'assets/run.png',
   ];
+
+  Future<void> _submitHabit(BuildContext context) async {
+    final int userId = 1; // Hardcoded user for now
+
+    final String name = habitNameController.text.trim().isNotEmpty
+        ? habitNameController.text.trim()
+        : 'New Habit ${DateTime.now().millisecondsSinceEpoch}';
+
+    // Generate fallback for icon_default
+    final String iconDefault = 'default-icon.png';
+
+    // Use currentColor or fallback
+    final String colorHex = '#${currentColor.value.toRadixString(16).padLeft(8, '0')}';
+
+    // Use selectedImage or fallback
+    final String icon = selectedImage ?? 'default-icon.png';
+
+    // Random/default fallback values
+    final Map<String, dynamic> habitData = {
+      'name': name,
+      'icon_default': iconDefault,
+      'icon_status': {
+        'active': 'icon-active.png',
+        'inactive': 'icon-inactive.png',
+      },
+      'goal_time': selectedFrequency ?? 'daily',
+      'goal_status': {
+        'completed': 0,
+        'in_progress': 0,
+        'not_started': 1,
+      },
+      'time_options': ['morning'], // can make this dynamic if needed
+    };
+
+    try {
+      final response = await ApiService.createHabitForUser(userId, habitData);
+      // print('API response: $response');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => NewhabitMainPage()),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
+  }
+
 
   void _showImagePicker(HabitDetailState habitDetailState) {
     showDialog<String>(
@@ -122,10 +173,6 @@ class _NewhabitPageState extends State<NewhabitPage> {
       },
     );
   }
-
-  final TextEditingController habitNameController = TextEditingController();
-  final TextEditingController weeklyGoalController = TextEditingController();
-  String? errorText;
 
   Widget getStepContent(HabitDetailState habitDetailState){
     if (currentStep == 2) {
@@ -816,12 +863,14 @@ class _NewhabitPageState extends State<NewhabitPage> {
         ],
       );
     } else {
+      // Delay navigation until frame is ready
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => NewhabitMainPage()),
         );
       });
+
       return Container();
     }
 
@@ -839,7 +888,7 @@ class _NewhabitPageState extends State<NewhabitPage> {
         margin: const EdgeInsets.all(36),
         width: double.infinity,
         child: ElevatedButton(
-          onPressed: () {
+          onPressed: () async {
 
             final habitName = habitNameController.text.trim();
             final weeklyGoal = weeklyGoalController.text;
@@ -872,6 +921,10 @@ class _NewhabitPageState extends State<NewhabitPage> {
             setState(() {
               currentStep += 2;
             });
+
+            // if(currentStep == 12){
+            //   await _submitHabit(context);
+            // }
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Color(0xFFC3A1FF),
