@@ -82,10 +82,10 @@ class _NewHabitViewPageState extends State<NewHabitViewPage> {
               SizedBox(height: 24),
               GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => HabitCalenderPage()),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => HabitCalenderPage()),
+                  // );
                 },
                 child: Container(
                   height: 80,

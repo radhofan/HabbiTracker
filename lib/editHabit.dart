@@ -73,7 +73,8 @@ class _EditHabit extends State<EditHabit> {
 
     try {
       final habit = await ApiService.getHabit(habitId);
-      print(habit);
+      print("habit: $habit");
+      print("habit runtimeType: ${habit.runtimeType}");
 
       setState(() {
         _habitNameController?.text = habit['name'] ?? '';
@@ -117,18 +118,35 @@ class _EditHabit extends State<EditHabit> {
     });
 
     try {
+      print("updating");
       final updatedHabit = await ApiService.updateHabit(habitId, updatedData);
-      print('Update successful: $updatedHabit');
+
+      debugPrint("API returned updatedHabit: $updatedHabit");
+      debugPrint('Update successful: $updatedHabit');
+
+      await Future.delayed(const Duration(milliseconds: 300));
+
       setState(() {
-        _habit = updatedHabit; // update local habit data with response
+        _habit = updatedHabit;
         _isUpdating = false;
       });
-      // optionally pop or show success message here
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('✅ Habit updated successfully')),
+      );
+
+      await Future.delayed(const Duration(seconds: 1));
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => NewHabitViewPage()),
+      );
     } catch (e) {
       setState(() {
         _error = e.toString();
         _isUpdating = false;
       });
+      debugPrint("Error updating habit: $e");
     }
   }
 
@@ -879,7 +897,7 @@ class _EditHabit extends State<EditHabit> {
                                     Padding(
                                       padding: EdgeInsets.only(right: 16), // 👈 just padding on the left
                                       child: Text(
-                                        habitDetailState.selectedFrequency,
+                                        selectedFrequency,
                                         style: TextStyle(
                                           fontSize: 16,
                                           color: Colors.black,
@@ -1132,17 +1150,14 @@ class _EditHabit extends State<EditHabit> {
                           onPressed: () async {
                             Map<String, dynamic> updatedData = {
                               'name': _habitNameController?.text,
-                              'color': myColor,
+                              'color': "4280391411",
                               'goal_time': selectedFrequency,
                               'icon_default': selectedImage,
                               'time_options': time,
                             };
+                            print("Updated data BEFORE sending: $updatedData");
                             await _updateHabit(habitId, updatedData);
                             habitDetailState.reset();         // then reset state
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => NewHabitViewPage()),
-                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.purple.shade100,
